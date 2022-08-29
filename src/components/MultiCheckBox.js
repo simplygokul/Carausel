@@ -5,7 +5,7 @@ export default function MultiCheckBox(props){
     return(<div style={
         {marginTop:30}
     }>
-        <label>{field.key}{required}</label>
+        <label>{field.key}{field.isMandatory?<span style={{color:'red'}}>*</span>:<span>#</span>}</label>
         <br/>
         {field.options.map((option)=>{
             return(<label> {option.title}

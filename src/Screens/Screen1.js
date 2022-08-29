@@ -13,6 +13,7 @@ function Screen1(props) {
   let handleSubmit = async (e) => {
     e.preventDefault();
     console.log("submitted Successfully")
+    console.log(Name)
     try {
       let res = await fetch("https://jio-clickstream-product-suggestion.extensions.jiox0.de/api/form-submissions-full", {
         method: "POST",
@@ -43,10 +44,18 @@ function Screen1(props) {
     const secondField = fields[1]
     const thirdField = fields[2]
   return (
-    <div style={{display:'block'}}>
-    <div style={{marginLeft:'50px'}}>
-      <img src={coupon.desktopImageUrl} alt="not found"/>
-    </div>
+    <>
+      
+      {/* <img src={coupon.desktopImageUrl} alt="not found"   />
+       */}
+       <div  style={{width:'50%'}} >
+        <img src={coupon.desktopImageUrl} alt="not found"   />
+      
+
+       </div>
+   
+      <div style={{display:'block'}}>
+  
   <div >
   <p className="header" 
   style={{width:'65%',backgroundColor:'white',marginLeft:'auto',marginRight:'auto',marginTop:"0",fontSize:'18px',fontWeight:'700',color:'#141414'}}
@@ -100,6 +109,8 @@ function Screen1(props) {
     </form>
   </div>
   </div>
+    </>
+  
   )
 }
 

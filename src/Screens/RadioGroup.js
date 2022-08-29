@@ -6,7 +6,7 @@ export default function RadioGroup(props) {
     <div style={
       {marginTop:30}
   }>
-      <label >{field.key}{required}</label>
+      <label >{field.key}{field.isMandatory?<span style={{color:'red'}}>*</span>:<span></span>}</label>
       <br />
       <form>
       {field.options.map((option) => {
