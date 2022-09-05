@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import TextBox from './TextBox';
 import RadioGroup from './RadioGroup';
+import Button from 'react-bootstrap/Button';
+import TestModal from './TestModal.Js';
+import './MyModal.css'
+
+
 
 
 function Screen1(props) { 
@@ -8,47 +13,70 @@ function Screen1(props) {
   const [Name,setName] = useState("")
   const [gender,setGender] = useState("")
   const [name,setname] = useState("")
+  const [modal, setModal] = useState(false);
+
+  let toggleModal=()=>{
+    setModal(!modal)
+    setName("");
+    setname("");
+  }
+
   
 
   let handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("submitted Successfully")
-    console.log(Name)
-    try {
-      let res = await fetch("https://jio-clickstream-product-suggestion.extensions.jiox0.de/api/form-submissions-full", {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({fields:[{valueStr: Name,fieldKey:{id:1}},
-          {valueStr: gender,fieldKey:{id:2}},
-          {valueStr: name,fieldKey:{id:18}},],formKey:{id:1}
-      }),
-      });
-      let resJson = await res.json();
-      if (res.status === 200) {
-        setName("");
-        setname("");
-        alert("User created successfully");
-      } else {
-        alert("Some error occured");
+    if((gender!="")&&(Name!="")&&(name!="")){
+      try {
+        let res = await fetch("/api/form-submissions-full", {
+          method: "POST",
+          headers: {
+  
+            "Content-Type": "application/json",
+    
+            "Access-Control-Allow-Origin": "*",
+    
+            "Access-Control-Allow-Headers": "*",
+    
+            Accept: "*/*",
+    
+          },
+    
+          //body: JSON.stringify(request),
+        //   headers: { 'Content-Type': 'application/json',
+        // 'Access-Control-Allow-Origin': '*'},
+          body: JSON.stringify({fields:[{valueStr: Name,fieldKey:{id:1}},
+            {valueStr: gender,fieldKey:{id:2}},
+            {valueStr: name,fieldKey:{id:18}},],formKey:{id:1}
+        }),
+        });
+        let resJson = await res.json();
+        if (res.status === 201) {
+          setName("");
+          setname("");
+          setModal(true)
+          alert("User created successfully");
+        } else {
+          console.log(res);
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
-  }
+    else{
+      
+    }
+    }
+    
   
   const {
     formId: { fields },
     } = coupon;
-    console.log(fields)
     const firstField = fields[0]
     const secondField = fields[1]
     const thirdField = fields[2]
   return (
     <>
-      
-      {/* <img src={coupon.desktopImageUrl} alt="not found"   />
-       */}
-       <div  style={{width:'50%'}} >
+       <div>
         <img src={coupon.desktopImageUrl} alt="not found"   />
       
 
@@ -68,14 +96,15 @@ function Screen1(props) {
  
 
   </div>
-  <div  style={{boxShadow:'0px 0px 11px 5px rgba(181,181,181,0.68)',width:'60%',marginLeft:'auto',marginRight:'auto',padding:20}} > 
+  <div  style={{boxShadow:'0px 0px 11px 5px rgba(181,181,181,0.68)',width:'65%',marginLeft:'auto',marginRight:'auto',padding:20}} > 
     <form onSubmit={handleSubmit}>
     <div style={
         {marginTop:0}
     }>
         <label style={{paddingBottom:40}}>{firstField.key}{firstField.isMandatory?<span style={{color:'red'}}>*</span>:<span></span>}</label>
         <br/>
-        <input style={{marginTop:20, width:'70%'}} type="text" onChange={(e) => setName(e.target.value)} />
+        <input style={{marginTop:20, width:'70%'}} value={Name} type="text" onChange={(e) => setName(e.target.value)} />
+        {Name=="" && <p>Field cannot be empty</p>}
         <br/>
         </div>
         <div style={
@@ -83,18 +112,18 @@ function Screen1(props) {
   }>
       <label >{secondField.key}{secondField.isMandatory?<span style={{color:'red'}}>*</span>:<span></span>}</label>
       <br />
-      <form>
+      <div>
       {secondField.options.map((option) => {
         return (
           <label>
             {option.title}
-            <input style={{margin:20}} type="radio" value={option.valueStr} onClick={() => setGender(option.valueStr)} name='gender' 
-            checked={gender===option.valueStr}
+            <input style={{margin:20}} type="radio" value={option.valueStr} onChange={() => setGender(option.valueStr)} name='gender' 
+            checked={gender===option.valueStr} key={option.key}
              />
           </label>
         );
       })}
-      </form>
+      </div>
       <br />
     </div>
     <div style={
@@ -102,13 +131,33 @@ function Screen1(props) {
     }>
         <label style={{paddingBottom:40}}>{thirdField.key}{thirdField.isMandatory?<span style={{color:'red'}}>*</span>:<span></span>}</label>
         <br/>
-        <input style={{marginTop:20, width:'70%'}} type="text" onChange={(e) => setname(e.target.value)} />
+        <input style={{marginTop:20, width:'70%'}} type="text" value={name} onChange={(e) => setname(e.target.value)} />
         <br/>
         </div>
       <button type='submit'>Submit</button>
     </form>
   </div>
   </div>
+  <>
+
+      {modal && (
+        <div className="modal">
+          <div onClick={toggleModal} className="overlay"></div>
+          <div className="modal-content">
+            <h2>Successfully Submitted</h2>
+            <p>
+              Thank your for your Interest.
+            </p>
+            <button className="close-modal" onClick={toggleModal}>
+              Submit Again
+            </button>
+            <button className="submit-again" onClick={toggleModal}>
+              Go Home
+            </button>
+          </div>
+        </div>
+      )}
+    </>
     </>
   
   )

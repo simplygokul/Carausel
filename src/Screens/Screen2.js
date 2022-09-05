@@ -12,12 +12,78 @@ function Screen2(props) {
   const [Email, setEmail] = useState("");
   const [Contact, setContact] = useState("");
   const [MultiCheck, setMultiCheck] = useState("");
+  const [SingleCheck, setSingleCheck] = useState("");
   const [Gender, setGender] = useState("");
   const [Select, setSelect] = useState("");
+  const [modal,setModal]=useState(false)
+  
+  
   const {
     formId: { fields },
   } = coupon;
   console.log(fields);
+
+  let toggleModal=()=>{
+    setModal(!modal)
+    setDate("");
+    setEmail("");
+    setContact("");
+    setMultiCheck("");
+    setSingleCheck("");
+    setGender("");
+    setSelect("")
+  }
+
+  let handleSubmit = async (e) => {
+    e.preventDefault();
+    if((Gender!="")&&(Date!="")&&(Select!="")&&(Contact!="")&&(MultiCheck!="")&&(SingleCheck!="")){
+      try {
+        let res = await fetch("/api/form-submissions-full", {
+          method: "POST",
+          headers: {
+  
+            "Content-Type": "application/json",
+    
+            "Access-Control-Allow-Origin": "*",
+    
+            "Access-Control-Allow-Headers": "*",
+    
+            Accept: "*/*",
+    
+          },
+    
+          //body: JSON.stringify(request),
+        //   headers: { 'Content-Type': 'application/json',
+        // 'Access-Control-Allow-Origin': '*'},
+          body: JSON.stringify({fields:[{valueStr: Date,fieldKey:{id:1}},
+            {valueStr: Email,fieldKey:{id:2}},
+            {valueStr: Contact,fieldKey:{id:18}},{valueStr: MultiCheck,fieldKey:{id:3}},
+            {valueStr: SingleCheck,fieldKey:{id:4}},
+            {valueStr: Gender,fieldKey:{id:5}},{valueStr: Select,fieldKey:{id:6}},
+            ],formKey:{id:1}
+        }),
+        });
+        let resJson = await res.json();
+        if (res.status === 201) {
+          setDate("");
+          setEmail("");
+          setContact("");
+          setMultiCheck("");
+          setSingleCheck("");
+          setGender("");
+          setSelect(true)
+          alert("User created successfully");
+        } else {
+          console.log(res);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    else{
+      
+    }
+    }
   const firstField = fields[0];
   const secondField = fields[1];
   const thirdField = fields[2];
@@ -25,8 +91,10 @@ function Screen2(props) {
   const fifthField = fields[4];
   const sixthField = fields[5];
   const seventhField = fields[6];
+  console.log(fifthField)
 
   return (
+    <>
     <div>
       <div style={{ marginRight: "auto", marginLeft: "auto" }}>
         <img src={coupon.desktopImageUrl} alt="not found" />
@@ -74,8 +142,7 @@ function Screen2(props) {
           padding: 20,
         }}
       >
-        <form>
-           ̰
+        <form onSubmit={handleSubmit}>
           <div style={{ marginTop: 30 }}>
             <label>
               {firstField.key}
@@ -104,7 +171,7 @@ function Screen2(props) {
               )}
             </label>
             <br />
-            <input type="email" style={{ marginTop: 20, width: "70%" }} />
+            <input type="email" style={{ marginTop: 20, width: "70%" }} onChange={(e) =>setEmail(e.target.value)} />
             <br />
           </div>
           <div style={{ marginTop: 30 }}>
@@ -121,6 +188,7 @@ function Screen2(props) {
               type="tel"
               className=""
               style={{ marginTop: 20, width: "70%" }}
+              onChange={(e) => setContact(e.target.value)}
             />
             <br />
           </div>
@@ -139,7 +207,7 @@ function Screen2(props) {
                 <label>
                   {" "}
                   {option.title}
-                  <input type="checkbox" checked={option.isDefault} />
+                  <input type="checkbox" checked={option.MultiCheck} onChange={(e) => setMultiCheck(e.target.value)} />
                 </label>
               );
             })}
@@ -160,7 +228,7 @@ function Screen2(props) {
                 <label>
                   {" "}
                   {option.title}
-                  <input type="checkbox" checked={option.isDefault} />
+                  <input type="checkbox" value={option.valueStr} checked={SingleCheck} onChange={(e) => setSingleCheck(e.target.value)} />
                 </label>
               );
             })}
@@ -176,7 +244,7 @@ function Screen2(props) {
               )}
             </label>
             <br />
-            <form>
+            <form onChange={(e) => setGender(e.target.value)}> 
               {sixthField.options.map((option) => {
                 return (
                   <label>
@@ -186,6 +254,7 @@ function Screen2(props) {
                       type="radio"
                       value={option.valueStr}
                       name="gender"
+                      //onChange={(e) => setGender(e.target.value)}
                       //  checked={option.isDefault?true:false}
                     />
                   </label>
@@ -204,9 +273,9 @@ function Screen2(props) {
               )}
             </label>
             <br />
-            <select style={{ marginTop: 20, width: "70%" }}>
+            <select style={{ marginTop: 20, width: "70%" }} onChange={(e) => setSelect(e.target.value)}>
               {seventhField.options.map((option) => {
-                return <option>{option.title}</option>;
+                return <option value={option.valueStr}>{option.title}</option>;
               })}
             </select>
             <br />
@@ -215,6 +284,27 @@ function Screen2(props) {
         </form>
       </div>
     </div>
+    <>
+
+      {modal && (
+        <div className="modal">
+          <div onClick={toggleModal} className="overlay"></div>
+          <div className="modal-content">
+            <h2>Successfully Submitted</h2>
+            <p>
+              Thank your for your Interest.
+            </p>
+            <button className="close-modal" onClick={toggleModal}>
+              Submit Again
+            </button>
+            <button className="submit-again" onClick={toggleModal}>
+              Go Home
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+    </>
   );
 }
 

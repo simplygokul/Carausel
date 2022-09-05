@@ -8,45 +8,65 @@ function Screen3(props) {
   const [Gender, setGender] = useState("");
   const [Name, setName] = useState("");
   const [Date, setDate] = useState("");
+  const [modal,setModal] = useState(false)
   const {
     formId: { fields },
   } = coupon;
+
+  let toggleModal=()=>{
+    setModal(!modal)
+    setName("");
+  }
   //console.log(fields)
   const firstField = fields[0];
   const secondField = fields[1];
   const thirdField = fields[2];
   let handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("submitted Successfully");
-    try {
-      let res = await fetch(
-        "https://jio-clickstream-product-suggestion.extensions.jiox0.de/api/form-submissions-full",
-        {
+    if((Gender!="")&&(Name!="")&&(Date!="")){
+      try {
+        let res = await fetch("/api/form-submissions-full", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fields: [
-              { valueStr: Gender, fieldKey: { id: 3 } },
-              { valueStr: Name, fieldKey: { id: 4 } },
-              { valueStr: Date, fieldKey: { id: 5 } },
-            ],
-            formKey: { id: 2 },
-          }),
+          headers: {
+  
+            "Content-Type": "application/json",
+    
+            "Access-Control-Allow-Origin": "*",
+    
+            "Access-Control-Allow-Headers": "*",
+    
+            Accept: "*/*",
+    
+          },
+    
+          //body: JSON.stringify(request),
+        //   headers: { 'Content-Type': 'application/json',
+        // 'Access-Control-Allow-Origin': '*'},
+          body: JSON.stringify({fields:[{valueStr: Name,fieldKey:{id:1}},
+            {valueStr: Gender,fieldKey:{id:2}},
+            {valueStr: Date,fieldKey:{id:18}},],formKey:{id:1}
+        }),
+        });
+        let resJson = await res.json();
+        if (res.status === 201) {
+          setName("");
+          setDate("");
+          setGender("");
+          setModal(true)
+          alert("User created successfully");
+        } else {
+          console.log(res);
         }
-      );
-      let resJson = await res.json();
-      if (res.status === 200) {
-        setName("");
-        setDate("");
-        alert("User created successfully");
-      } else {
-        alert("Some error occured");
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
-  };
+    else{
+      
+    }
+    }
   return (
+    <>
     <div>
       <div style={{ marginRight: "auto", marginLeft: "auto" }}>
         <img src={coupon.desktopImageUrl} alt="not found" />
@@ -163,6 +183,27 @@ function Screen3(props) {
         </form>
       </div>
     </div>
+    <>
+
+      {modal && (
+        <div className="modal">
+          <div onClick={toggleModal} className="overlay"></div>
+          <div className="modal-content">
+            <h2>Successfully Submitted</h2>
+            <p>
+              Thank your for your Interest.
+            </p>
+            <button className="close-modal" onClick={toggleModal}>
+              Submit Again
+            </button>
+            <button className="submit-again" onClick={toggleModal}>
+              Go Home
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+    </>
   );
 }
 
