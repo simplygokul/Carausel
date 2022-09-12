@@ -5,6 +5,8 @@ import ContactNumber from "../components/ContactNumber";
 import MultiCheckBox from "../components/MultiCheckBox";
 import DateBox from "../components/DateBox";
 import SelectBox from "../components/SelectBox";
+import {useNavigate} from 'react-router-dom';
+import './ScreenStyles.css'
 
 function Screen2(props) {
   const { coupon } = props;
@@ -15,7 +17,8 @@ function Screen2(props) {
   const [SingleCheck, setSingleCheck] = useState("");
   const [Gender, setGender] = useState("");
   const [Select, setSelect] = useState("");
-  const [modal,setModal]=useState(false)
+  const [modal,setModal]=useState(false);
+  const navigate = useNavigate()
   
   
   const {
@@ -32,6 +35,10 @@ function Screen2(props) {
     setSingleCheck("");
     setGender("");
     setSelect("")
+  }
+
+  let goHome=()=>{
+    navigate("/")
   }
 
   let handleSubmit = async (e) => {
@@ -71,8 +78,8 @@ function Screen2(props) {
           setMultiCheck("");
           setSingleCheck("");
           setGender("");
-          setSelect(true)
-          alert("User created successfully");
+          setModal(true);
+          e.target.reset()
         } else {
           console.log(res);
         }
@@ -94,7 +101,7 @@ function Screen2(props) {
   console.log(fifthField)
 
   return (
-    <>
+    <div style={{backgroundColor:"white"}}>
     <div>
       <div style={{ marginRight: "auto", marginLeft: "auto" }}>
         <img src={coupon.desktopImageUrl} alt="not found" />
@@ -204,10 +211,10 @@ function Screen2(props) {
             <br />
             {fourthField.options.map((option) => {
               return (
-                <label>
+                <label style={{marginRight:'25px'}}>
                   {" "}
                   {option.title}
-                  <input type="checkbox" checked={option.MultiCheck} onChange={(e) => setMultiCheck(e.target.value)} />
+                  <input style={{marginLeft:10}} type="checkbox" checked={option.MultiCheck} onChange={(e) => setMultiCheck(e.target.value)} />
                 </label>
               );
             })}
@@ -225,7 +232,7 @@ function Screen2(props) {
             <br />
             {fifthField.options.map((option) => {
               return (
-                <label>
+                <label style={{marginRight:'25px'}}>
                   {" "}
                   {option.title}
                   <input type="checkbox" value={option.valueStr} checked={SingleCheck} onChange={(e) => setSingleCheck(e.target.value)} />
@@ -247,9 +254,10 @@ function Screen2(props) {
             <form onChange={(e) => setGender(e.target.value)}> 
               {sixthField.options.map((option) => {
                 return (
-                  <label>
+                  <label className='radioBtn'>
                     {option.title}
                     <input
+                      
                       style={{ margin: 20 }}
                       type="radio"
                       value={option.valueStr}
@@ -286,25 +294,27 @@ function Screen2(props) {
     </div>
     <>
 
-      {modal && (
+    {modal && (
         <div className="modal">
           <div onClick={toggleModal} className="overlay"></div>
           <div className="modal-content">
-            <h2>Successfully Submitted</h2>
-            <p>
-              Thank your for your Interest.
-            </p>
-            <button className="close-modal" onClick={toggleModal}>
+            <div className="first-modal">
+                <img src="https://jio-marketing.extensions.jiox5.de/img/green_check.e5137cae.svg" style={{width:30,height:30,marginRight:10}} />
+                <h3>Form Submitted Successfully</h3>
+            </div>
+            <div className="buttonCont">
+            <button className="close-modal" onClick={goHome}>
+              Go To Home
+            </button>
+            <button variant="light" className="submit-modal" onClick={toggleModal}>
               Submit Again
             </button>
-            <button className="submit-again" onClick={toggleModal}>
-              Go Home
-            </button>
+            </div>
           </div>
         </div>
       )}
     </>
-    </>
+    </div>
   );
 }
 

@@ -3,7 +3,10 @@ import TextBox from './TextBox';
 import RadioGroup from './RadioGroup';
 import Button from 'react-bootstrap/Button';
 import TestModal from './TestModal.Js';
-import './MyModal.css'
+import './MyModal.css';
+import {useNavigate} from 'react-router-dom'
+import './ScreenStyles.css'
+
 
 
 
@@ -14,13 +17,18 @@ function Screen1(props) {
   const [gender,setGender] = useState("")
   const [name,setname] = useState("")
   const [modal, setModal] = useState(false);
+  const navigate=useNavigate()
 
   let toggleModal=()=>{
-    setModal(!modal)
     setName("");
     setname("");
+    setGender("")
+    setModal(!modal)
+    
   }
-
+  let goHome=()=>{
+    navigate("/")
+  }
   
 
   let handleSubmit = async (e) => {
@@ -53,17 +61,14 @@ function Screen1(props) {
         if (res.status === 201) {
           setName("");
           setname("");
-          setModal(true)
-          alert("User created successfully");
+          setModal(true);
+          e.target.reset()
         } else {
           console.log(res);
         }
       } catch (err) {
         console.log(err);
       }
-    }
-    else{
-      
     }
     }
     
@@ -103,8 +108,8 @@ function Screen1(props) {
     }>
         <label style={{paddingBottom:40}}>{firstField.key}{firstField.isMandatory?<span style={{color:'red'}}>*</span>:<span></span>}</label>
         <br/>
-        <input style={{marginTop:20, width:'70%'}} value={Name} type="text" onChange={(e) => setName(e.target.value)} />
-        {Name=="" && <p>Field cannot be empty</p>}
+        <input style={{marginTop:20, width:'70%'}} type="text" onChange={(e) => setName(e.target.value)} />
+        <p id='firstFieldErr' className='error-msg'>Field cannot be empty</p>
         <br/>
         </div>
         <div style={
@@ -115,9 +120,9 @@ function Screen1(props) {
       <div>
       {secondField.options.map((option) => {
         return (
-          <label>
+          <label className='radioBtn'>
             {option.title}
-            <input style={{margin:20}} type="radio" value={option.valueStr} onChange={() => setGender(option.valueStr)} name='gender' 
+            <input className='inputRadio' style={{margin:20}} type="radio" value={option.valueStr} onChange={() => setGender(option.valueStr)} name='gender' 
             checked={gender===option.valueStr} key={option.key}
              />
           </label>
@@ -131,29 +136,31 @@ function Screen1(props) {
     }>
         <label style={{paddingBottom:40}}>{thirdField.key}{thirdField.isMandatory?<span style={{color:'red'}}>*</span>:<span></span>}</label>
         <br/>
-        <input style={{marginTop:20, width:'70%'}} type="text" value={name} onChange={(e) => setname(e.target.value)} />
+        <input style={{marginTop:20, width:'70%'}} required requiredTxt="Field Cannot be Empty" type="text" onChange={(e) => setname(e.target.value)} />
         <br/>
         </div>
-      <button type='submit'>Submit</button>
+      <button className='submit-btn' type='submit' variant='primary'>Submit</button>
     </form>
   </div>
   </div>
   <>
 
-      {modal && (
+  {modal && (
         <div className="modal">
           <div onClick={toggleModal} className="overlay"></div>
           <div className="modal-content">
-            <h2>Successfully Submitted</h2>
-            <p>
-              Thank your for your Interest.
-            </p>
-            <button className="close-modal" onClick={toggleModal}>
+            <div className="first-modal">
+                <img src="https://jio-marketing.extensions.jiox5.de/img/green_check.e5137cae.svg" style={{width:30,height:30,marginRight:10}} />
+                <h3>Form Submitted Successfully</h3>
+            </div>
+            <div className="buttonCont">
+            <button className="close-modal" onClick={goHome}>
+              Go To Home
+            </button>
+            <button variant="light" className="submit-modal" onClick={toggleModal}>
               Submit Again
             </button>
-            <button className="submit-again" onClick={toggleModal}>
-              Go Home
-            </button>
+            </div>
           </div>
         </div>
       )}

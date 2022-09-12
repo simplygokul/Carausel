@@ -1,0 +1,38 @@
+.radioBtn{
+    border: 2px solid  #ebebe0;
+    border-radius: 5px;
+    padding: 10px;
+    margin-right: 20px;
+    /* border: 2px solid #2e31be; */
+}
+
+.input[type]{
+    border: 20px solid #2e31be;
+}
+
+.error-msg{
+    display: none;
+}
+
+.submit-btn{
+        appearance: none;
+          -webkit-appearance: none;
+        font-family: sans-serif;
+        cursor: pointer;
+        padding: 12px;
+        min-width: 100px;
+        border: 0px;
+        -webkit-transition: background-color 100ms linear;
+        -ms-transition: background-color 100ms linear;
+        transition: background-color 100ms linear;
+        background: #2e31be;
+        color: #ffffff;
+        margin-top: 15px;
+        border-radius: 5px;
+
+}
+
+input{
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+}

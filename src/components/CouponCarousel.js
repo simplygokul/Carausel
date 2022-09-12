@@ -3,11 +3,12 @@ import "react-responsive-carousel/lib/styles/carousel.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import {useNavigate} from "react-router-dom"
 import axios from "axios"
-import {api_url} from "../config.js"
+// import {api_url} from "../config.js"
 import "./CouponCarousel.css"
 function CouponCarousel(){
     const navigate = useNavigate();
     const [coupons,setCoupans] = useState(null)
+
     useEffect(() => {
       callApi();
     }, []);
@@ -15,7 +16,7 @@ function CouponCarousel(){
        
       await axios
         .get(
-           `${api_url}/api/promotions?page=0&size=5&sort=position,asc`,
+           `https://jio-clickstream-product-suggestion.extensions.jiox0.de/api/promotions?page=0&size=5&sort=position,asc`,
           {
             method: "GET",
            
@@ -35,7 +36,15 @@ function CouponCarousel(){
        
       }
    
+    // fetch('https://jio-marketing.extensions.jiox5.de/api/promotions?page=0&size=5&sort=position,asc')
+    // .then(data => {
+    // return data.json();
+    // })
+    // .then(data => {
+    // setCoupans(data);
+    // });
     const onClickItem = (item) => {
+      console.log(item)
       if (item) {
         navigate(`/${item.urlName}`, { replace: true });
       }

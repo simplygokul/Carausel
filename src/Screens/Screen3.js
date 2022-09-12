@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import TextBox from "./TextBox";
 import RadioGroup from "./RadioGroup";
 import DateBox from "../components/DateBox";
+import { useNavigate } from "react-router-dom";
+import Button from 'react-bootstrap/Button';
+import './ScreenStyles.css';
 
 function Screen3(props) {
   const { coupon } = props;
@@ -9,6 +12,7 @@ function Screen3(props) {
   const [Name, setName] = useState("");
   const [Date, setDate] = useState("");
   const [modal,setModal] = useState(false)
+  const navigate = useNavigate()
   const {
     formId: { fields },
   } = coupon;
@@ -17,6 +21,11 @@ function Screen3(props) {
     setModal(!modal)
     setName("");
   }
+
+  let goHome=()=>{
+    navigate("/")
+  }
+  
   //console.log(fields)
   const firstField = fields[0];
   const secondField = fields[1];
@@ -52,8 +61,9 @@ function Screen3(props) {
           setName("");
           setDate("");
           setGender("");
-          setModal(true)
-          alert("User created successfully");
+          setModal(true);
+          e.target.reset()
+          // alert("User created successfully");
         } else {
           console.log(res);
         }
@@ -128,15 +138,17 @@ function Screen3(props) {
             <form>
               {firstField.options.map((option) => {
                 return (
-                  <label>
+                  <label className='radioBtn'>
                     {option.title}
                     <input
+                      
                       style={{ margin: 20 }}
                       type="radio"
                       value={option.valueStr}
-                      onClick={() => setGender(option.valueStr)}
+                      onChange={() => setGender(option.valueStr)}
                       name="gender"
                       checked={Gender === option.valueStr}
+                      required
                     />
                   </label>
                 );
@@ -158,6 +170,7 @@ function Screen3(props) {
               style={{ marginTop: 20, width: "70%" }}
               type="text"
               onChange={(e) => setName(e.target.value)}
+              required
             />
             <br />
           </div>
@@ -172,14 +185,15 @@ function Screen3(props) {
             </label>
             <br />
             <input
+              required
               type="date"
-              style={{ marginTop: 10, width: "30%" }}
+              style={{ marginTop: "10", width: "30%" }}
               placeholder="Select Date"
               onChange={(e) => setDate(e.target.value)}
             />
             <br />
           </div>
-          <button type="submit">Submit</button>
+          <button type="submit" className="submit-btn">Submit</button>
         </form>
       </div>
     </div>
@@ -189,16 +203,18 @@ function Screen3(props) {
         <div className="modal">
           <div onClick={toggleModal} className="overlay"></div>
           <div className="modal-content">
-            <h2>Successfully Submitted</h2>
-            <p>
-              Thank your for your Interest.
-            </p>
-            <button className="close-modal" onClick={toggleModal}>
+            <div className="first-modal">
+                <img src="https://jio-marketing.extensions.jiox5.de/img/green_check.e5137cae.svg" style={{width:30,height:30,marginRight:10}} />
+                <h3>Form Submitted Successfully</h3>
+            </div>
+            <div className="buttonCont">
+            <button className="close-modal" onClick={goHome}>
+              Go To Home
+            </button>
+            <button variant="light" className="submit-modal" onClick={toggleModal}>
               Submit Again
             </button>
-            <button className="submit-again" onClick={toggleModal}>
-              Go Home
-            </button>
+            </div>
           </div>
         </div>
       )}
